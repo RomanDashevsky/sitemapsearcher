@@ -4,6 +4,8 @@ class SitemapController {
 
   index({ request, response }) {
 
+
+
     response.json({
       massage: 'searching...'
     });

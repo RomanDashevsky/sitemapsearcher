@@ -1,4 +1,14 @@
 .idea
+package-lock.json
+
+# Adonis directory for storing tmp files
+tmp
+
+# Environment variables, never commit this file
+.env
+
+# The development sqlite file
+database/development.sqlite
 
 ### macOS template
 # General
