@@ -1,5 +1,6 @@
 .idea
-package-lock.json
+
+sitemap.xml
 
 # Adonis directory for storing tmp files
 tmp
