@@ -14,6 +14,6 @@ This is tool for finding html elements at URLs from sitemap.xml
 adonis serve --dev
 
 
-### Find by work
+### Find by word
 
 http://127.0.0.1:3333/sitemap?word={{word}}
