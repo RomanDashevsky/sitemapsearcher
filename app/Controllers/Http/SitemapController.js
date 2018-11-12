@@ -59,7 +59,7 @@ const getPagesWithSearchingContent = async (urlArray, searchWord) => {
 const runSearch = async (searchWord) => {
   const urlArray = await getUrlFromSiteMap()
   const result = await getPagesWithSearchingContent(urlArray, searchWord)
-  await Drive.put('result.json', {'searchWord': searchWord, 'result': result})
+  await Drive.put('result.json', JSON.stringify({'searchWord': searchWord, 'result': result}))
 }
 
 class SitemapController {
