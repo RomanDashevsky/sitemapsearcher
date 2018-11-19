@@ -7,24 +7,58 @@ const path = require('chromedriver').path
 const service = new chrome.ServiceBuilder(path).build()
 chrome.setDefaultService(service)
 
+const defaultAltArray = [
+  'Purple hero (default)',
+  'Microscope hero',
+  'Flask hero',
+  'Microbe hero',
+  'Green-blue hero',
+  'Bubbles hero',
+  'Pink hero',
+  'Net hero',
+  'Net hero',
+]
+
+
 
 class WebDriverManager {
 
-  static async searchWordOnPage(url, searchWord, driver, pages) {
+  static async searchWordOnPage(url, components, driver, pages) {
 
     await driver.get(url)
     const element = await driver.findElement(By.css('html'))
-    const html = await element.getAttribute('innerHTML')
+    const title = await driver.getTitle()
 
-    if (html.indexOf(searchWord) >= 0) {
-      console.log(url);
-      pages.push(url)
+    for (const componentClass in components) {
+      if (components.hasOwnProperty(componentClass)) {
+
+        try {
+          const foundComponents = await driver.findElements(By.css(`.${componentClass} img`))
+
+          for (const indexOfFoundComponent in foundComponents) {
+
+            const foundComponent = foundComponents[indexOfFoundComponent];
+            const src = await foundComponent.getAttribute('src')
+            const alt = await foundComponent.getAttribute('alt')
+            const isDefault = defaultAltArray.indexOf(alt) > -1
+
+            const res = `${url};${title};${components[componentClass]};${src};${alt};${isDefault};\n`
+            console.log(res);
+            pages[0] = pages[0] + res
+
+          }
+        } catch (e) {
+          console.log(e)
+        }
+
+
+      }
     }
 
   }
 
 
-  static async getPagesWithSearchingContent(urlArray, searchWord) {
+  static async getPagesWithSearchingContent(urlArray, components) {
 
     const driverPool = [];
 
@@ -35,17 +69,17 @@ class WebDriverManager {
       driverPool.push(driver)
     }
 
-    const pages = []
+    let pages = ['']
 
     try {
       const countOfUrls = urlArray.length
       let currentSearchingPromises = [];
 
-      currentSearchingPromises.push(WebDriverManager.searchWordOnPage(urlArray[0], searchWord, driverPool[0], pages))
+      currentSearchingPromises.push(WebDriverManager.searchWordOnPage(urlArray[0], components, driverPool[0], pages))
 
       for (let i = 1; i < countOfUrls; i++) {
 
-        currentSearchingPromises.push(WebDriverManager.searchWordOnPage(urlArray[i], searchWord, driverPool[i % countOfProcesses], pages))
+        currentSearchingPromises.push(WebDriverManager.searchWordOnPage(urlArray[i], components, driverPool[i % countOfProcesses], pages))
         if (i % countOfProcesses === 0) {
           await Promise.all(currentSearchingPromises)
           currentSearchingPromises = []
