@@ -17,3 +17,10 @@ adonis serve --dev
 ### Find by word
 
 http://127.0.0.1:3333/sitemap?word={{word}}
+
+### Find empty elements
+
+http://127.0.0.1:3333/empty
+
+each line is element with empty inner text
+`${url};${title};${tag};${elemID};${elemClass};\n`

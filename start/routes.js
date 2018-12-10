@@ -17,4 +17,5 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
-Route.resource('sitemap', 'SiteMapController')
+Route.get('sitemap', 'SiteMapController.index')
+Route.get('empty', 'SiteMapController.empty')
