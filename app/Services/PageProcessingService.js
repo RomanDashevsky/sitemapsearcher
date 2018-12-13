@@ -1,5 +1,7 @@
 'use strict'
 
+const Logger = use('Logger')
+
 class PageProcessingService {
 
   static async searchWordOnPage(url, { searchWord }, tab, result) {
@@ -9,12 +11,11 @@ class PageProcessingService {
       const html = await tab.content()
 
       if (html.indexOf(searchWord) >= 0) {
-        console.log(url)
         result.push(url)
       }
 
     } catch (e) {
-      console.log(e)
+      Logger.transport('file').error('error: %j', e)
     }
 
   }
@@ -42,17 +43,16 @@ class PageProcessingService {
 
             if (!innerText && !innerHTML) {
               const res = `${url};${title};${tag};${elemID};${elemClass};\n`
-              console.log(res)
               result[0] = result[0] + res
             }
           }
         } catch (e) {
-          console.log(e)
+          Logger.transport('file').error('error: %j', e)
         }
       })
 
     } catch (e) {
-      console.log(e)
+      Logger.transport('file').error('error: %j', e)
     }
 
   }
@@ -69,13 +69,12 @@ class PageProcessingService {
         const outerComponent = outerComponents[indexOfOuterComponents]
         let innerComponent = await outerComponent.$$(`${innerSelector}`)
         if ((empty && !innerComponent.length) || (!empty && innerComponent.length)) {
-          console.log(url)
           result.push(url)
           break
         }
       }
     } catch (e) {
-      console.log(e)
+      Logger.transport('file').error('error: %j', e)
     }
   }
 

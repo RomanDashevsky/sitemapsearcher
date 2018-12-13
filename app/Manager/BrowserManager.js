@@ -3,6 +3,7 @@
 const Env = use('Env')
 const countOfProcesses = Env.get('COUNT_OF_PROCESSES')
 const puppeteer = require('puppeteer')
+const ProgressBar = require('ascii-progress')
 const { onlyDomRequest } = require('../Utils/helper')
 
 class BrowserManager {
@@ -26,18 +27,19 @@ class BrowserManager {
       const countOfUrls = urlArray.length
       let totalProgress = 0
 
+      const bar = new ProgressBar({
+        schema: '[:bar.green]\t:current/:total \t:percent\t:elapseds\t:etas',
+        total: countOfUrls
+      });
+
       let currentSearchingPromises = [];
 
       currentSearchingPromises.push(callbackFunc(urlArray[0], options, tabPool[0], result))
+      bar.tick()
 
       for (let i = 1; i < countOfUrls; i++) {
 
-        const currentProgress =  Number((i * 100 / countOfUrls).toFixed(0))
-
-        if (currentProgress !== totalProgress && currentProgress > totalProgress) {
-          totalProgress = currentProgress
-          console.log(`Progress: ${i}/${countOfUrls} --- ${totalProgress}%`)
-        }
+        bar.tick()
 
         currentSearchingPromises.push(callbackFunc(urlArray[i], options, tabPool[i % countOfProcesses], result))
         if (i % countOfProcesses === 0) {
