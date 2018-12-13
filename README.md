@@ -24,3 +24,7 @@ http://127.0.0.1:3333/empty
 
 each line is element with empty inner text
 `${url};${title};${tag};${elemID};${elemClass};\n`
+
+### Find pages that has outer elements which have inner elements
+
+http://127.0.0.1:3333/outer-inner?outer={{outer}}&inner={{inner}}&[empty=true]

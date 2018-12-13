@@ -1,3 +1,5 @@
+'use strict'
+
 const Drive = use('Drive')
 const parseString = require('xml2js').parseString
 
