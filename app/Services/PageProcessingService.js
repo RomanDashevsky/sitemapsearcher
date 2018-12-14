@@ -1,31 +1,46 @@
 'use strict'
 
 const Logger = use('Logger')
+const CacheService = require('./CacheService')
+
+const getTab = async (url, freeTab) => {
+
+  const cacheTab = await CacheService.get(url)
+
+  if (cacheTab) {
+    return cacheTab
+  }
+
+  await freeTab.goto(url)
+
+  CacheService.set(url, freeTab)
+
+  return freeTab
+}
 
 class PageProcessingService {
 
-  static async searchWordOnPage(url, { searchWord }, tab, result) {
+  static async searchWordOnPage(url, { searchWord, empty }, freeTab, result) {
 
     try {
-      await tab.goto(url)
+      const tab = await getTab(url, freeTab)
       const html = await tab.content()
 
-      if (html.indexOf(searchWord) >= 0) {
+      if ((empty && html.indexOf(searchWord) < 0) || (!empty && html.indexOf(searchWord) >= 0)) {
         result.push(url)
       }
 
     } catch (e) {
       Logger.transport('file').error('error: %j', e)
     }
-
   }
 
-  static async searchEmptyText(url, { tags }, tab, result) {
+  static async searchEmptyText(url, { tags }, freeTab, result) {
 
     try {
 
-      await tab.goto(url)
-      const title = await tab.getTitle()
+      const tab = await getTab(url, freeTab)
+      const title = await tab.title()
 
       tags.forEach(async (tag) => {
         try {
@@ -54,14 +69,13 @@ class PageProcessingService {
     } catch (e) {
       Logger.transport('file').error('error: %j', e)
     }
-
   }
 
-  static async searchInnerElementInOuter(url, { outerSelector, innerSelector, empty }, tab, result) {
+  static async searchInnerElementInOuter(url, { outerSelector, innerSelector, empty }, freeTab, result) {
 
     try {
 
-      await tab.goto(url)
+      const tab = await getTab(url, freeTab)
 
       const outerComponents = await tab.$$(`${outerSelector}`)
       for (const indexOfOuterComponents in outerComponents) {
