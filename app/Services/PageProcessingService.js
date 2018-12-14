@@ -1,18 +1,25 @@
 'use strict'
 
 const Logger = use('Logger')
+const Env = use('Env')
+const enableCache = Env.get('ENABLE_CACHE')
 const CacheService = require('./CacheService')
 
 const getTab = async (url, freeTab) => {
 
-  const cacheTab = await CacheService.get(url)
+  if (enableCache === 'true') {
+    const cacheTab = await CacheService.get(url)
 
-  if (cacheTab) {
-    return cacheTab
+    if (cacheTab) {
+      return cacheTab
+    }
   }
 
   await freeTab.goto(url)
-  await CacheService.set(url, freeTab)
+
+  if (enableCache === 'true') {
+    await CacheService.set(url, freeTab)
+  }
 
   return freeTab
 }
