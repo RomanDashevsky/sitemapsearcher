@@ -14,17 +14,7 @@ This is tool for finding html elements at URLs from sitemap.xml
 adonis serve --dev
 
 
-### Find by word
+### Usage
 
-http://127.0.0.1:3333/sitemap?word={{word}}
+Open in browser "http://localhost:3333/docs/"
 
-### Find empty elements
-
-http://127.0.0.1:3333/empty
-
-each line is element with empty inner text
-`${url};${title};${tag};${elemID};${elemClass};\n`
-
-### Find pages that has outer elements which have inner elements
-
-http://127.0.0.1:3333/outer-inner?outer={{outer}}&inner={{inner}}&[empty=true]
