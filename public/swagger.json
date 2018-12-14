@@ -1,0 +1,107 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Simple API overview",
+    "version": "v2"
+  },
+  "paths": {
+    "/word": {
+      "get": {
+        "operationId": "word",
+        "summary": "Searching pages which have word",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "word",
+            "in": "query",
+            "description": "Word which need found on page",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "empty",
+            "in": "query",
+            "description": "If set true searching pages which haven't word",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Send message and Run background job"
+          }
+        }
+      }
+    },
+    "/info": {
+      "get": {
+        "operationId": "info",
+        "summary": "Get Pages Info: URL, Tile. Save it as CSV",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Send message and Run background job"
+          }
+        }
+      }
+    },
+    "/empty-tags": {
+      "get": {
+        "operationId": "empty-tags",
+        "summary": "Get Pages and Elements which haven't inner text. Save it as CSV",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Send message and Run background job"
+          }
+        }
+      }
+    },
+    "/outer-inner": {
+      "get": {
+        "operationId": "outer-inner",
+        "summary": "Searching pages which have outer elements which have inner elements",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "outerSelector",
+            "in": "query",
+            "description": "Selector of outer component",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "innerSelector",
+            "in": "query",
+            "description": "Selector of inner component",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "empty",
+            "in": "query",
+            "description": "If set true searching pages which haven't word",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Send message and Run background job"
+          }
+        }
+      }
+    }
+  },
+  "consumes": [
+    "application/json"
+  ]
+}
