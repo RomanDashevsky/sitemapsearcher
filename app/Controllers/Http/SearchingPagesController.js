@@ -21,6 +21,11 @@ class SearchingPagesController {
     response.json({'message': returnMessage})
   }
 
+  async info({ request, response }) {
+    BackgroundWorkerService.getPageInfo()
+    response.json({'message': `Crawling pages, getting info...`})
+  }
+
   async empty({ request, response }) {
     BackgroundWorkerService.searchEmptyElements({ tagsWithInnerText })
     response.json({'message': `Searching empty elements...`})

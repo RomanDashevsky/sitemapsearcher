@@ -13,6 +13,12 @@ class BackgroundWorkerService {
     await Drive.put('result.json', JSON.stringify({'searchWord': options.searchWord, 'result': result}))
   }
 
+  static async  getPageInfo() {
+    const urlArray = await SourceManager.getUrlArray()
+    const result = await BrowserManager.getResult(urlArray, null, PageProcessingService.getPageInfo)
+    await Drive.put('info.csv', result[0])
+  }
+
   static async  searchEmptyElements(options) {
     const urlArray = await SourceManager.getUrlArray()
     const result = await BrowserManager.getResult(urlArray, options, PageProcessingService.searchEmptyText)

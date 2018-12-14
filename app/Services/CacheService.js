@@ -1,6 +1,6 @@
 'use strict'
 
-const cacheMap = new WeakMap()
+const cacheMap = new Map()
 
 class CacheService {
 

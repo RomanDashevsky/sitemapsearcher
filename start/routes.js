@@ -18,5 +18,6 @@ const Route = use('Route')
 
 Route.on('/').render('welcome')
 Route.get('/word', 'SearchingPagesController.word')
+Route.get('/info', 'SearchingPagesController.info')
 Route.get('/empty-tags', 'SearchingPagesController.empty')
 Route.get('/outer-inner', 'SearchingPagesController.outerInner')

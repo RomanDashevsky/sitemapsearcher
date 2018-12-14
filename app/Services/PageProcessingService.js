@@ -12,8 +12,7 @@ const getTab = async (url, freeTab) => {
   }
 
   await freeTab.goto(url)
-
-  CacheService.set(url, freeTab)
+  await CacheService.set(url, freeTab)
 
   return freeTab
 }
@@ -31,7 +30,7 @@ class PageProcessingService {
       }
 
     } catch (e) {
-      Logger.transport('file').error('error: %j', e)
+      Logger.transport('file').error('error: %s', e.message)
     }
   }
 
@@ -62,12 +61,12 @@ class PageProcessingService {
             }
           }
         } catch (e) {
-          Logger.transport('file').error('error: %j', e)
+          Logger.transport('file').error('error: %s', e.message)
         }
       })
 
     } catch (e) {
-      Logger.transport('file').error('error: %j', e)
+      Logger.transport('file').error('error: %s', e.message)
     }
   }
 
@@ -88,7 +87,21 @@ class PageProcessingService {
         }
       }
     } catch (e) {
-      Logger.transport('file').error('error: %j', e)
+      Logger.transport('file').error('error: %s', e.message)
+    }
+  }
+
+  static async getPageInfo(url, options, freeTab, result) {
+
+    try {
+
+      const tab = await getTab(url, freeTab)
+      const title = await tab.title()
+      const res = `${url};${title};\n`
+      result[0] = result[0] + res
+
+    } catch (e) {
+      Logger.transport('file').error('error: %s', e.message)
     }
   }
 
