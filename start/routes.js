@@ -17,6 +17,6 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
-Route.get('sitemap', 'SiteMapController.index')
-Route.get('empty', 'SiteMapController.empty')
-Route.get('outer-inner', 'SiteMapController.findInner')
+Route.get('/word', 'SearchingPagesController.word')
+Route.get('/empty-tags', 'SearchingPagesController.empty')
+Route.get('/outer-inner', 'SearchingPagesController.outerInner')

@@ -2,11 +2,30 @@
 
 const Env = use('Env')
 const countOfProcesses = Env.get('COUNT_OF_PROCESSES')
+const disableNonDomRequest = Env.get('DISABLE_NON_DOM_REQUEST')
 const puppeteer = require('puppeteer')
 const ProgressBar = require('ascii-progress')
 const { onlyDomRequest } = require('../Utils/helper')
 
 class BrowserManager {
+
+
+  static async getTabPool(browser) {
+    const tabPool = []
+
+    for (let i = 0; i < countOfProcesses; i++) {
+      const tab = await browser.newPage()
+
+      if (disableNonDomRequest === "true") {
+        tab.setRequestInterception(true)
+        tab.on('request', onlyDomRequest)
+      }
+
+      tabPool.push(tab)
+    }
+
+    return tabPool
+  }
 
   static async getResult(urlArray, options, callbackFunc) {
 
@@ -15,18 +34,8 @@ class BrowserManager {
 
     try {
 
-      const tabPool = []
-
-      for (let i = 0; i < countOfProcesses; i++) {
-        const tab = await browser.newPage()
-        tab.setRequestInterception(true)
-        tab.on('request', onlyDomRequest)
-        tabPool.push(tab)
-      }
-
+      const tabPool = await BrowserManager.getTabPool(browser)
       const countOfUrls = urlArray.length
-      let totalProgress = 0
-
       const bar = new ProgressBar({
         schema: '[:bar.green]\t:current/:total \t:percent\t:elapseds\t:etas',
         total: countOfUrls
@@ -51,7 +60,7 @@ class BrowserManager {
 
       await Promise.all(currentSearchingPromises)
 
-      console.log('Job finished...');
+      console.log('\nJob finished...');
 
     } catch (e) {
       throw e
