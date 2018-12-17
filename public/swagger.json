@@ -1,14 +1,14 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Simple API overview",
+    "title": "SiteMap Searcher",
     "version": "v2"
   },
   "paths": {
     "/word": {
       "get": {
         "operationId": "word",
-        "summary": "Searching pages which have word",
+        "summary": "Searching pages which have component and word in this component",
         "produces": [
           "application/json"
         ],
@@ -18,6 +18,13 @@
             "in": "query",
             "description": "Word which need found on page",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "selector",
+            "in": "query",
+            "description": "Selector of outer component. If selector is empty, word'll be searching in html",
+            "required": false,
             "type": "string"
           },
           {

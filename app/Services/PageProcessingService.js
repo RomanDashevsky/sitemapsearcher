@@ -4,36 +4,50 @@ const Logger = use('Logger')
 const Env = use('Env')
 const enableCache = Env.get('ENABLE_CACHE')
 const CacheService = require('./CacheService')
+const cheerio = require('cheerio')
 
-const getTab = async (url, freeTab) => {
+
+const getPageHTML = async (url, page) => {
 
   if (enableCache === 'true') {
-    const cacheTab = await CacheService.get(url)
+    const cacheHTML = await CacheService.get(url)
 
-    if (cacheTab) {
-      return cacheTab
+    if (cacheHTML) {
+      return cacheHTML
     }
   }
 
-  await freeTab.goto(url)
+  await page.goto(url)
+  const html = await page.content()
 
   if (enableCache === 'true') {
-    await CacheService.set(url, freeTab)
+    await CacheService.set(url, html)
   }
 
-  return freeTab
+  return html
+}
+
+const initJquery = async (url, page) => {
+  const html = await getPageHTML(url, page)
+  return cheerio.load(html)
 }
 
 class PageProcessingService {
 
-  static async searchWordOnPage(url, { searchWord, empty }, freeTab, result) {
+  static async searchWordInComponent(url, { selector, searchWord, empty }, page, result) {
 
     try {
-      const tab = await getTab(url, freeTab)
-      const html = await tab.content()
+      const $ = await initJquery(url, page)
+      const elems = $(selector)
 
-      if ((empty && html.indexOf(searchWord) < 0) || (!empty && html.indexOf(searchWord) >= 0)) {
-        result.push(url)
+      for (let elemIndex = 0; elemIndex < elems.length; elemIndex++) {
+        const elem = elems[elemIndex]
+        const innerHtml = $(elem).html()
+
+        if ((empty && innerHtml.indexOf(searchWord) < 0) || (!empty && innerHtml.indexOf(searchWord) >= 0)) {
+          result.push(url)
+          return
+        }
       }
 
     } catch (e) {
@@ -41,24 +55,24 @@ class PageProcessingService {
     }
   }
 
-  static async searchEmptyText(url, { tags }, freeTab, result) {
+  static async searchEmptyText(url, { tags }, page, result) {
 
     try {
 
-      const tab = await getTab(url, freeTab)
-      const title = await tab.title()
+      const $ = await initJquery(url, page)
+      const title = $('title').text();
 
       tags.forEach(async (tag) => {
         try {
-          const foundComponents = await tab.$$(`${tag}`)
+          const elems = $(tag)
 
-          for (const indexOfFoundComponent in foundComponents) {
+          for (let elemIndex = 0; elemIndex < elems.length; elemIndex++) {
 
-            const foundComponent = foundComponents[indexOfFoundComponent]
-            const elemID = await foundComponent.getProperty('id')
-            const elemClass = await foundComponent.getProperty('class')
-            let innerText = await foundComponent.getProperty('innerText')
-            let innerHTML = await foundComponent.getProperty('innerHTML')
+            const elem = $(elems[elemIndex])
+            const elemID = elem.attr('id')
+            const elemClass = elem.attr('class')
+            let innerText = elem.attr('innerText')
+            let innerHTML = elem.attr('innerHTML')
 
             innerText = innerText.trim()
 
@@ -77,18 +91,18 @@ class PageProcessingService {
     }
   }
 
-  static async searchInnerElementInOuter(url, { outerSelector, innerSelector, empty }, freeTab, result) {
+  static async searchInnerElementInOuter(url, { outerSelector, innerSelector, empty }, page, result) {
 
     try {
 
-      const tab = await getTab(url, freeTab)
+      const $ = await initJquery(url, page)
 
-      const outerComponents = await tab.$$(`${outerSelector}`)
-      for (const indexOfOuterComponents in outerComponents) {
+      const outerElems = $(outerSelector)
+      for (let elemIndex = 0; elemIndex < outerElems.length; elemIndex++) {
 
-        const outerComponent = outerComponents[indexOfOuterComponents]
-        let innerComponent = await outerComponent.$$(`${innerSelector}`)
-        if ((empty && !innerComponent.length) || (!empty && innerComponent.length)) {
+        const outerElem = $(outerElems[elemIndex])
+        let innerElems = outerElem.find(innerSelector)
+        if ((empty && !innerElems.length) || (!empty && innerElems.length)) {
           result.push(url)
           break
         }
@@ -98,12 +112,12 @@ class PageProcessingService {
     }
   }
 
-  static async getPageInfo(url, options, freeTab, result) {
+  static async getPageInfo(url, options, page, result) {
 
     try {
 
-      const tab = await getTab(url, freeTab)
-      const title = await tab.title()
+      const $ = await initJquery(url, page)
+      const title = $('title').text();
       const res = `${url};${title};\n`
       result[0] = result[0] + res
 

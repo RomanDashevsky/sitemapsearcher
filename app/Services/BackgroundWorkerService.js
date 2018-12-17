@@ -7,10 +7,10 @@ const PageProcessingService = require('./PageProcessingService')
 
 class BackgroundWorkerService {
 
-  static async  searchWordInSiteMap(options) {
+  static async  searchWordInComponent(options) {
     const urlArray = await SourceManager.getUrlArray()
-    const result = await BrowserManager.getResult(urlArray, options, PageProcessingService.searchWordOnPage)
-    await Drive.put('result.json', JSON.stringify({'searchWord': options.searchWord, 'result': result}))
+    const result = await BrowserManager.getResult(urlArray, options, PageProcessingService.searchWordInComponent)
+    await Drive.put('word.json', JSON.stringify({'searchWord': options.searchWord, 'selector': options.selector, 'result': result}))
   }
 
   static async  getPageInfo() {
