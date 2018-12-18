@@ -1,43 +1,15 @@
 'use strict'
 
 const Logger = use('Logger')
-const Env = use('Env')
-const enableCache = Env.get('ENABLE_CACHE')
-const CacheService = require('./CacheService')
-const cheerio = require('cheerio')
+const PageService = require('./PageService')
 
-
-const getPageHTML = async (url, page) => {
-
-  if (enableCache === 'true') {
-    const cacheHTML = await CacheService.get(url)
-
-    if (cacheHTML) {
-      return cacheHTML
-    }
-  }
-
-  await page.goto(url)
-  const html = await page.content()
-
-  if (enableCache === 'true') {
-    await CacheService.set(url, html)
-  }
-
-  return html
-}
-
-const initJquery = async (url, page) => {
-  const html = await getPageHTML(url, page)
-  return cheerio.load(html)
-}
 
 class PageProcessingService {
 
   static async searchWordInComponent(url, { selector, searchWord, empty }, page, result) {
 
     try {
-      const $ = await initJquery(url, page)
+      const $ = await PageService.initJquery(url, page)
       const elems = $(selector)
 
       for (let elemIndex = 0; elemIndex < elems.length; elemIndex++) {
@@ -59,7 +31,7 @@ class PageProcessingService {
 
     try {
 
-      const $ = await initJquery(url, page)
+      const $ = await PageService.initJquery(url, page)
       const title = $('title').text();
 
       tags.forEach(async (tag) => {
@@ -95,7 +67,7 @@ class PageProcessingService {
 
     try {
 
-      const $ = await initJquery(url, page)
+      const $ = await PageService.initJquery(url, page)
 
       const outerElems = $(outerSelector)
       for (let elemIndex = 0; elemIndex < outerElems.length; elemIndex++) {
@@ -116,7 +88,7 @@ class PageProcessingService {
 
     try {
 
-      const $ = await initJquery(url, page)
+      const $ = await PageService.initJquery(url, page)
       const title = $('title').text();
       const res = `${url};${title};\n`
       result[0] = result[0] + res
