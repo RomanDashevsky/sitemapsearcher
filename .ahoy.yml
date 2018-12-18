@@ -26,21 +26,21 @@ commands:
     usage: Start a shell in the container.
 
   npm:
-    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && npm $@"'
+    cmd: 'cd ./ops-tools/docker && docker-compose exec crawler sh -c "cd /app && npm $@"'
     usage: Run npm in nyumed theme folder.
 
   adonis:
-    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && adonis $@"'
+    cmd: 'cd ./ops-tools/docker && docker-compose exec crawler sh -c "cd /app && adonis $@"'
     usage: Run adonis cli.
 
   npm_i:
-    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && npm i"'
+    cmd: 'cd ./ops-tools/docker && docker-compose exec crawler sh -c "cd /app && npm i"'
     usage: Run npm install.
 
   npm_is:
-    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && npm i --save @"'
+    cmd: 'cd ./ops-tools/docker && docker-compose exec crawler sh -c "cd /app && npm i --save @"'
     usage: Run npm install and save dependencies.
 
   npm_isd:
-    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && npm i --save-dev @"'
+    cmd: 'cd ./ops-tools/docker && docker-compose exec crawler sh -c "cd /app && npm i --save-dev @"'
     usage: Run npm install and save dev dependencies.

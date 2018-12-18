@@ -1,15 +1,15 @@
 'use strict'
 
-const cacheMap = new Map()
+const Redis = use('Redis')
 
 class CacheService {
 
   static async set(key, value) {
-    cacheMap.set(key, value)
+    await Redis.set(key, value)
   }
 
   static async get(key) {
-    return cacheMap.get(key)
+    return await Redis.get(key)
   }
 
 }

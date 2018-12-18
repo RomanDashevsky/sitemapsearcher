@@ -4,7 +4,7 @@ const Env = use('Env')
 const countOfProcesses = Env.get('COUNT_OF_PROCESSES')
 const disableNonDomRequest = Env.get('DISABLE_NON_DOM_REQUEST')
 const puppeteer = require('puppeteer')
-const ProgressBar = require('ascii-progress')
+// const ProgressBar = require('ascii-progress')
 const { onlyDomRequest } = require('../Utils/helper')
 
 class BrowserManager {
@@ -30,25 +30,31 @@ class BrowserManager {
   static async getResult(urlArray, options, callbackFunc) {
 
     const result = []
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
+      ]
+    })
 
     try {
 
       const pagesPool = await BrowserManager.getPagesPool(browser)
       const countOfUrls = urlArray.length
-      const bar = new ProgressBar({
-        schema: '[:bar.green]\t:current/:total \t:percent\t:elapseds\t:etas',
-        total: countOfUrls
-      });
+      // const bar = new ProgressBar({
+      //   schema: '[:bar.green]\t:current/:total \t:percent\t:elapseds\t:etas',
+      //   total: countOfUrls
+      // });
 
       let currentSearchingPromises = [];
 
       currentSearchingPromises.push(callbackFunc(urlArray[0], options, pagesPool[0], result))
-      bar.tick()
+      // bar.tick()
 
       for (let i = 1; i < countOfUrls; i++) {
 
-        bar.tick()
+        console.log(i)
+        // bar.tick()
 
         currentSearchingPromises.push(callbackFunc(urlArray[i], options, pagesPool[i % countOfProcesses], result))
         if (i % countOfProcesses === 0) {
