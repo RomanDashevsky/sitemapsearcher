@@ -10,21 +10,21 @@ const { onlyDomRequest } = require('../Utils/helper')
 class BrowserManager {
 
 
-  static async getTabPool(browser) {
-    const tabPool = []
+  static async getPagesPool(browser) {
+    const pagesPool = []
 
     for (let i = 0; i < countOfProcesses; i++) {
-      const tab = await browser.newPage()
+      const page = await browser.newPage()
 
       if (disableNonDomRequest === "true") {
-        tab.setRequestInterception(true)
-        tab.on('request', onlyDomRequest)
+        page.setRequestInterception(true)
+        page.on('request', onlyDomRequest)
       }
 
-      tabPool.push(tab)
+      pagesPool.push(page)
     }
 
-    return tabPool
+    return pagesPool
   }
 
   static async getResult(urlArray, options, callbackFunc) {
@@ -34,7 +34,7 @@ class BrowserManager {
 
     try {
 
-      const tabPool = await BrowserManager.getTabPool(browser)
+      const pagesPool = await BrowserManager.getPagesPool(browser)
       const countOfUrls = urlArray.length
       const bar = new ProgressBar({
         schema: '[:bar.green]\t:current/:total \t:percent\t:elapseds\t:etas',
@@ -43,14 +43,14 @@ class BrowserManager {
 
       let currentSearchingPromises = [];
 
-      currentSearchingPromises.push(callbackFunc(urlArray[0], options, tabPool[0], result))
+      currentSearchingPromises.push(callbackFunc(urlArray[0], options, pagesPool[0], result))
       bar.tick()
 
       for (let i = 1; i < countOfUrls; i++) {
 
         bar.tick()
 
-        currentSearchingPromises.push(callbackFunc(urlArray[i], options, tabPool[i % countOfProcesses], result))
+        currentSearchingPromises.push(callbackFunc(urlArray[i], options, pagesPool[i % countOfProcesses], result))
         if (i % countOfProcesses === 0) {
           await Promise.all(currentSearchingPromises)
           currentSearchingPromises = []

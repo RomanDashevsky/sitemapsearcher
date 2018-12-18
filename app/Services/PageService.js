@@ -3,8 +3,9 @@
 const Env = use('Env')
 const enableCache = Env.get('ENABLE_CACHE')
 const CacheService = require('./CacheService')
-const cheerio = require('cheerio')
+const ViewPortService = require('./ViewPortService')
 
+const viewPorts = ViewPortService.getViewports()
 
 class PageService {
 
@@ -18,24 +19,18 @@ class PageService {
     }
 
     await page.goto(url)
-    const html = await page.content()
+    const resultHtml = {}
+
+    for (const viewPortName in viewPorts) {
+      await page.setViewport(viewPorts[viewPortName])
+      resultHtml[viewPortName] = await page.content()
+    }
 
     if (enableCache === 'true') {
-      await CacheService.set(url, html)
+      await CacheService.set(url, resultHtml)
     }
 
-    return html
-  }
-
-  static async initJquery(url, page, excludeSelectors = null) {
-    const html = await PageService.getPageHTML(url, page)
-    const $ = cheerio.load(html)
-
-    if (excludeSelectors) {
-      $(excludeSelectors).remove()
-    }
-
-    return $
+    return resultHtml
   }
 
 }

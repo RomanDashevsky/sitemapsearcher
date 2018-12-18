@@ -20,14 +20,16 @@ class BackgroundWorkerService {
 
   static async  getPageInfo() {
     const urlArray = await SourceManager.getUrlArray()
-    const result = await BrowserManager.getResult(urlArray, null, PageProcessingService.getPageInfo)
-    await Drive.put('info.csv', result[0])
+    let result = await BrowserManager.getResult(urlArray, null, PageProcessingService.getPageInfo)
+    result = [...new Set(result)];
+    await Drive.put('info.csv', result.join(''))
   }
 
   static async  searchEmptyElements(options) {
     const urlArray = await SourceManager.getUrlArray()
-    const result = await BrowserManager.getResult(urlArray, options, PageProcessingService.searchEmptyText)
-    await Drive.put('empty.csv', result[0])
+    let result = await BrowserManager.getResult(urlArray, options, PageProcessingService.searchEmptyText)
+    result = [...new Set(result)];
+    await Drive.put('empty.csv', result.join(''))
   }
 
   static async  searchInnerElementInOuter(options) {
