@@ -5,7 +5,8 @@
   "description": "The fullstack application boilerplate for Adonisjs",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js --max_old_space_size=8000",
+    "dev": "adonis serve --dev",
+    "start": "node server.js --dev --max_old_space_size=8192",
     "test": "node ace test"
   },
   "keywords": [
