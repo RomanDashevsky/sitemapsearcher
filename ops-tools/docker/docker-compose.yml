@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  crawler:
+    build: ./images/crawler
+    environment:
+      - DEV_MOD=YES
+    volumes:
+      - ../../:/var/www/app
+    ports:
+      - "3333:3333"
+    depends_on:
+      - redis
+  redis:
+    image: redis:5-alpine
+    ports:
+      - "6379:6379"

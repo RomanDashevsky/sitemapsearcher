@@ -1,0 +1,46 @@
+ahoyapi: v2
+version: 0.0.0
+commands:
+  up:
+    cmd: "cd ./ops-tools/docker && docker-compose up $@"
+    usage: Create and run docker services.
+
+  ps:
+    cmd: "cd ./ops-tools/docker && docker-compose ps $@"
+    usage: List the running docker-compose containers.
+
+  start:
+    cmd: "cd ./ops-tools/docker && docker-compose start $@"
+    usage: Start the docker-compose containers.
+
+  stop:
+    cmd: "cd ./ops-tools/docker && docker-compose stop $@"
+    usage: Stop the docker-compose containers.
+
+  restart:
+    cmd: "cd ./ops-tools/docker && docker-compose restart $@"
+    usage: Restart the docker-compose containers.
+
+  sh:
+    cmd: "cd ./ops-tools/docker && docker-compose exec crawler /bin/sh"
+    usage: Start a shell in the container.
+
+  npm:
+    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && npm $@"'
+    usage: Run npm in nyumed theme folder.
+
+  adonis:
+    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && adonis $@"'
+    usage: Run adonis cli.
+
+  npm_i:
+    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && npm i"'
+    usage: Run npm install.
+
+  npm_is:
+    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && npm i --save @"'
+    usage: Run npm install and save dependencies.
+
+  npm_isd:
+    cmd: 'cd ./ops-tools/docker && docker-compose exec -it crawler sh -c "cd /var/www/app && npm i --save-dev @"'
+    usage: Run npm install and save dev dependencies.
