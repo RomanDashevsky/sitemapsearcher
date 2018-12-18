@@ -1,11 +1,20 @@
 class ResponseMessengerService {
 
-  static getWordMessage({searchWord, selector, empty}) {
-    if (empty) {
-      return `Searching pages which haven't word '${searchWord}' in '${selector}' selector...`
-    } else {
-      return `Searching pages which have word '${searchWord}' in '${selector}' selector...`
+  static getWordMessage({searchWord, selector, empty, excludeSelectors}) {
+    let message = 'Searching pages which '
+
+    message += empty ? 'haven\'t ' : 'have '
+    message += `word '${searchWord}'.`
+
+    if (selector) {
+      message += ` In '${selector}' selector...`
     }
+
+    if (excludeSelectors) {
+      message += ` Exclude components with selectors '${excludeSelectors}'...`
+    }
+
+    return message
   }
 
   static getPageInfoMessage() {

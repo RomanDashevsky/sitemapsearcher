@@ -33,6 +33,15 @@
             "description": "If set true searching pages which haven't word",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "excludeSelectors",
+            "in": "query",
+            "description": "Exclude components from DOM",
+            "required": false,
+            "type": "array",
+            "items": { "type": "string" },
+            "collectionFormat": "multi"
           }
         ],
         "responses": {
@@ -98,6 +107,15 @@
             "description": "If set true searching pages which haven't word",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "excludeSelectors",
+            "in": "query",
+            "description": "Exclude components from DOM",
+            "required": false,
+            "type": "array",
+            "items": { "type": "string" },
+            "collectionFormat": "multi"
           }
         ],
         "responses": {

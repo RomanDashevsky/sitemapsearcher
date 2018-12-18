@@ -27,9 +27,15 @@ class PageService {
     return html
   }
 
-  static async initJquery(url, page) {
+  static async initJquery(url, page, excludeSelectors = null) {
     const html = await PageService.getPageHTML(url, page)
-    return cheerio.load(html)
+    const $ = cheerio.load(html)
+
+    if (excludeSelectors) {
+      $(excludeSelectors).remove()
+    }
+
+    return $
   }
 
 }

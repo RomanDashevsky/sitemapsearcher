@@ -10,7 +10,8 @@ class SearchingPagesController {
     const searchWord = request._qs.word
     const selector = request._qs.selector || 'html'
     const empty = !!request._qs.empty
-    const options = { selector, searchWord, empty }
+    const excludeSelectors = request._qs.excludeSelectors ? request._qs.excludeSelectors.join(', ') : null
+    const options = { selector, searchWord, empty, excludeSelectors }
     const responseMessage = ResponseMessengerService.getWordMessage(options)
     BackgroundWorkerService.searchWordInComponent(options)
     console.log(responseMessage)
@@ -35,7 +36,8 @@ class SearchingPagesController {
     const outerSelector = request._qs.outerSelector
     const innerSelector = request._qs.innerSelector
     const empty = !!request._qs.empty
-    const options = { outerSelector, innerSelector, empty }
+    const excludeSelectors = request._qs.excludeSelectors ? request._qs.excludeSelectors.join(', ') : null
+    const options = { outerSelector, innerSelector, empty, excludeSelectors }
     const responseMessage = ResponseMessengerService.getOuterInnerMessage(options)
     BackgroundWorkerService.searchInnerElementInOuter(options)
     console.log(responseMessage);

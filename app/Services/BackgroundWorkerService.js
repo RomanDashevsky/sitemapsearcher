@@ -10,7 +10,12 @@ class BackgroundWorkerService {
   static async  searchWordInComponent(options) {
     const urlArray = await SourceManager.getUrlArray()
     const result = await BrowserManager.getResult(urlArray, options, PageProcessingService.searchWordInComponent)
-    await Drive.put('word.json', JSON.stringify({'searchWord': options.searchWord, 'selector': options.selector, 'result': result}))
+    await Drive.put('word.json', JSON.stringify({
+        'searchWord': options.searchWord,
+        'selector': options.selector,
+        'excludeSelectors': options.excludeSelectors,
+        'result': result
+      }))
   }
 
   static async  getPageInfo() {
@@ -28,7 +33,13 @@ class BackgroundWorkerService {
   static async  searchInnerElementInOuter(options) {
     const urlArray = await SourceManager.getUrlArray()
     const result = await BrowserManager.getResult(urlArray, options, PageProcessingService.searchInnerElementInOuter)
-    await Drive.put('outer-inner.json', JSON.stringify({'outerSelector': options.outerSelector, 'innerSelector': options.innerSelector, 'empty': options.empty, 'result': result}))
+    await Drive.put('outer-inner.json', JSON.stringify({
+      'outerSelector': options.outerSelector,
+      'innerSelector': options.innerSelector,
+      'empty': options.empty,
+      'excludeSelectors': options.excludeSelectors,
+      'result': result
+    }))
   }
 
 }

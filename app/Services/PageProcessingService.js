@@ -6,10 +6,10 @@ const PageService = require('./PageService')
 
 class PageProcessingService {
 
-  static async searchWordInComponent(url, { selector, searchWord, empty }, page, result) {
+  static async searchWordInComponent(url, { selector, searchWord, empty, excludeSelectors }, page, result) {
 
     try {
-      const $ = await PageService.initJquery(url, page)
+      const $ = await PageService.initJquery(url, page, excludeSelectors)
       const elems = $(selector)
 
       for (let elemIndex = 0; elemIndex < elems.length; elemIndex++) {
@@ -21,6 +21,20 @@ class PageProcessingService {
           return
         }
       }
+
+    } catch (e) {
+      Logger.transport('file').error('error: %s', e.message)
+    }
+  }
+
+  static async getPageInfo(url, options, page, result) {
+
+    try {
+
+      const $ = await PageService.initJquery(url, page)
+      const title = $('title').text();
+      const res = `${url};${title};\n`
+      result[0] = result[0] + res
 
     } catch (e) {
       Logger.transport('file').error('error: %s', e.message)
@@ -63,11 +77,11 @@ class PageProcessingService {
     }
   }
 
-  static async searchInnerElementInOuter(url, { outerSelector, innerSelector, empty }, page, result) {
+  static async searchInnerElementInOuter(url, { outerSelector, innerSelector, empty, excludeSelectors }, page, result) {
 
     try {
 
-      const $ = await PageService.initJquery(url, page)
+      const $ = await PageService.initJquery(url, page, excludeSelectors)
 
       const outerElems = $(outerSelector)
       for (let elemIndex = 0; elemIndex < outerElems.length; elemIndex++) {
@@ -79,20 +93,6 @@ class PageProcessingService {
           break
         }
       }
-    } catch (e) {
-      Logger.transport('file').error('error: %s', e.message)
-    }
-  }
-
-  static async getPageInfo(url, options, page, result) {
-
-    try {
-
-      const $ = await PageService.initJquery(url, page)
-      const title = $('title').text();
-      const res = `${url};${title};\n`
-      result[0] = result[0] + res
-
     } catch (e) {
       Logger.transport('file').error('error: %s', e.message)
     }
