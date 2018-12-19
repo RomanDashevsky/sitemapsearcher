@@ -27,7 +27,7 @@ class PageProcessingService {
         }
       }
     } catch (e) {
-      Logger.transport('file').error('error: %s', e.message)
+      Logger.transport('file').error(e.message)
     }
   }
 
@@ -39,18 +39,18 @@ class PageProcessingService {
       for (const viewPortName in viewportsHTML) {
         const html = viewportsHTML[viewPortName]
 
-        const $ = await JqueryService.initJquery(html, excludeSelectors)
+        const $ = await JqueryService.initJquery(html)
         const title = $('title').text();
         const res = `${url};${title};\n`
         result.push(res)
       }
 
     } catch (e) {
-      Logger.transport('file').error('error: %s', e.message)
+      Logger.transport('file').error(e.message)
     }
   }
 
-  static async searchEmptyText(url, { tags }, page, result) {
+  static async searchEmptyText(url, { tagsWithInnerText }, page, result) {
 
     try {
 
@@ -58,36 +58,34 @@ class PageProcessingService {
       for (const viewPortName in viewportsHTML) {
         const html = viewportsHTML[viewPortName]
 
-        const $ = await JqueryService.initJquery(html, excludeSelectors)
+        const $ = await JqueryService.initJquery(html)
         const title = $('title').text();
 
-        tags.forEach(async (tag) => {
-          try {
-            const elems = $(tag)
+        for (const tagIndex in tagsWithInnerText) {
+          const tag = tagsWithInnerText[tagIndex]
+          const elems = $(tag)
 
-            for (let elemIndex = 0; elemIndex < elems.length; elemIndex++) {
+          for (let elemIndex = 0; elemIndex < elems.length; elemIndex++) {
 
-              const elem = $(elems[elemIndex])
-              const elemID = elem.attr('id')
-              const elemClass = elem.attr('class')
-              let innerText = elem.attr('innerText')
-              let innerHTML = elem.attr('innerHTML')
+            const elem = $(elems[elemIndex])
+            const elemID = elem.attr('id')
+            const elemClass = elem.attr('class')
+            let innerText = elem.text()
+            let innerHTML = elem.html()
 
+            if(innerText) {
               innerText = innerText.trim()
-
-              if (!innerText && !innerHTML) {
-                const res = `${url};${title};${tag};${elemID};${elemClass};\n`
-                result.push(res)
-              }
             }
-          } catch (e) {
-            Logger.transport('file').error('error: %s', e.message)
-          }
-        })
-      }
 
+            if (!innerText && !innerHTML) {
+              const res = `${url};${title};${tag};${elemID};${elemClass};\n`
+              result.push(res)
+            }
+          }
+        }
+      }
     } catch (e) {
-      Logger.transport('file').error('error: %s', e.message)
+      Logger.transport('file').error(e.message)
     }
   }
 
@@ -112,7 +110,7 @@ class PageProcessingService {
         }
       }
     } catch (e) {
-      Logger.transport('file').error('error: %s', e.message)
+      Logger.transport('file').error(e.message)
     }
   }
 
