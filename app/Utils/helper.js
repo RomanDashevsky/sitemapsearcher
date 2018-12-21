@@ -9,6 +9,18 @@ module.exports = {
     req.continue()
   },
 
+  'getStringFromQueryArrayParam': function(param) {
+    if (typeof param === "string") {
+      return param
+    }
+
+    if (typeof param === "object") {
+      return param.join(', ')
+    }
+
+    return null
+  },
+
   'tagsWithInnerText': [
     'i',
     'b',

@@ -6,7 +6,7 @@ const JqueryService = require('./JqueryService')
 
 class PageProcessingService {
 
-  static async searchWordInComponent(url, { selector, searchWord, empty, excludeSelectors }, page, result) {
+  static async searchWordInComponent(url, { selectors, searchWord, empty, excludeSelectors }, page, result) {
 
     try {
       const viewportsHTML = await PageService.getPageHTML(url, page)
@@ -14,13 +14,41 @@ class PageProcessingService {
         const html = viewportsHTML[viewPortName]
 
         const $ = await JqueryService.initJquery(html, excludeSelectors)
-        const elems = $(selector)
+        const elems = $(selectors)
 
         for (let elemIndex = 0; elemIndex < elems.length; elemIndex++) {
           const elem = elems[elemIndex]
           const innerHtml = $(elem).html()
 
           if ((empty && innerHtml.indexOf(searchWord) < 0) || (!empty && innerHtml.indexOf(searchWord) >= 0)) {
+            result.push(url)
+            return
+          }
+        }
+      }
+    } catch (e) {
+      Logger.transport('file').error(e.message)
+    }
+  }
+
+  static async searchComponentWithAttr(url, { selectors, searchAttr, attrValue, strict, empty, excludeSelectors }, page, result) {
+
+    try {
+      const viewportsHTML = await PageService.getPageHTML(url, page)
+      for (const viewPortName in viewportsHTML) {
+        const html = viewportsHTML[viewPortName]
+
+        const $ = await JqueryService.initJquery(html, excludeSelectors)
+        const elems = $(selectors)
+
+        for (let elemIndex = 0; elemIndex < elems.length; elemIndex++) {
+          const elem = elems[elemIndex]
+          const currentAttrValue = String($(elem).attr(searchAttr))
+
+          if (strict && currentAttrValue === attrValue
+            || (empty && currentAttrValue.indexOf(attrValue) < 0)
+            || (!empty && currentAttrValue.indexOf(attrValue) >= 0)) {
+
             result.push(url)
             return
           }
@@ -50,7 +78,7 @@ class PageProcessingService {
     }
   }
 
-  static async searchEmptyText(url, { tagsWithInnerText }, page, result) {
+  static async searchEmptyText(url, { tagsWithInnerText, excludeSelectors }, page, result) {
 
     try {
 
@@ -58,7 +86,7 @@ class PageProcessingService {
       for (const viewPortName in viewportsHTML) {
         const html = viewportsHTML[viewPortName]
 
-        const $ = await JqueryService.initJquery(html)
+        const $ = await JqueryService.initJquery(html, excludeSelectors)
         const title = $('title').text();
 
         for (const tagIndex in tagsWithInnerText) {
@@ -89,7 +117,7 @@ class PageProcessingService {
     }
   }
 
-  static async searchInnerElementInOuter(url, { outerSelector, innerSelector, empty, excludeSelectors }, page, result) {
+  static async searchInnerElementInOuter(url, { outerSelectors, innerSelector, empty, excludeSelectors }, page, result) {
 
     try {
 
@@ -98,7 +126,7 @@ class PageProcessingService {
         const html = viewportsHTML[viewPortName]
 
         const $ = await JqueryService.initJquery(html, excludeSelectors)
-        const outerElems = $(outerSelector)
+        const outerElems = $(outerSelectors)
         for (let elemIndex = 0; elemIndex < outerElems.length; elemIndex++) {
 
           const outerElem = $(outerElems[elemIndex])
