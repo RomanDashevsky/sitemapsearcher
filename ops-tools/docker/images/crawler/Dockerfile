@@ -2,7 +2,7 @@ FROM node:8-alpine
 
 RUN npm i -g @adonisjs/cli
 
-COPY ./docker-entrypoint.sh /entrypoint.sh
+COPY ./entrypoint.sh /entrypoint.sh
 
 ARG DEV_MOD
 

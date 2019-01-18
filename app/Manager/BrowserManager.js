@@ -2,8 +2,10 @@
 
 const Env = use('Env')
 const countOfProcesses = Env.get('COUNT_OF_PROCESSES')
+const dockerHost = Env.get('DOCKER_HOST')
 const disableNonDomRequest = Env.get('DISABLE_NON_DOM_REQUEST')
 const puppeteer = require('puppeteer')
+const fetch = require('node-fetch')
 // const ProgressBar = require('ascii-progress')
 const { onlyDomRequest } = require('../Utils/helper')
 
@@ -27,19 +29,25 @@ class BrowserManager {
     return pagesPool
   }
 
+  static async getBrowserWSEndpoint(host, port = 9222) {
+    const url = `http://${host}:${port}/json/version`
+    const response = await fetch(url);
+    const json = await response.json();
+    return json.webSocketDebuggerUrl;
+  }
+
   static async getResult(urlArray, options, callbackFunc) {
 
     const result = []
-    const browser = await puppeteer.launch({
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox'
-      ]
+    const browserWSEndpoint = await BrowserManager.getBrowserWSEndpoint(dockerHost);
+    console.log(browserWSEndpoint)
+    const browser = await puppeteer.connect({
+      browserWSEndpoint: browserWSEndpoint
     })
 
-    try {
+    const pagesPool = await BrowserManager.getPagesPool(browser)
 
-      const pagesPool = await BrowserManager.getPagesPool(browser)
+    try {
       const countOfUrls = urlArray.length
       // const bar = new ProgressBar({
       //   schema: '[:bar.green]\t:current/:total \t:percent\t:elapseds\t:etas',
@@ -71,7 +79,9 @@ class BrowserManager {
     } catch (e) {
       throw e
     } finally {
-      await browser.close()
+      pagesPool.forEach(async (page) => {
+        await page.close()
+      })
     }
 
     return [...new Set(result)]
