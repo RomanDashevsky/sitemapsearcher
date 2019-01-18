@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "adonis serve --dev",
-    "start": "node server.js",
+    "start": "node server.js --dev --max_old_space_size=8192",
     "test": "node ace test"
   },
   "keywords": [

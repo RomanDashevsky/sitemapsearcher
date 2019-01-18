@@ -74,7 +74,7 @@ class BrowserManager {
       await browser.close()
     }
 
-    return result
+    return [...new Set(result)]
 
   }
 

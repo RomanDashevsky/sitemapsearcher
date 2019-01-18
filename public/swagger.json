@@ -21,11 +21,75 @@
             "type": "string"
           },
           {
-            "name": "selector",
+            "name": "selectors",
             "in": "query",
             "description": "Selector of outer component. If selector is empty, word'll be searching in html",
             "required": false,
+            "type": "array",
+            "items": { "type": "string" },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "empty",
+            "in": "query",
+            "description": "If set true searching pages which haven't word",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "excludeSelectors",
+            "in": "query",
+            "description": "Exclude components from DOM",
+            "required": false,
+            "type": "array",
+            "items": { "type": "string" },
+            "collectionFormat": "multi"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Send message and Run background job"
+          }
+        }
+      }
+    },
+    "/attribute": {
+      "get": {
+        "operationId": "attribute",
+        "summary": "Searching pages which have attribute with searching value...",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "selectors",
+            "in": "query",
+            "description": "Selector of component.",
+            "required": true,
+            "type": "array",
+            "items": { "type": "string" },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "attr",
+            "in": "query",
+            "description": "Attribute name",
+            "required": true,
             "type": "string"
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "description": "Attribute value",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "strict",
+            "in": "query",
+            "description": "If set true comparing will be strict, if set false it will be finding substring",
+            "required": false,
+            "type": "boolean"
           },
           {
             "name": "empty",
@@ -72,6 +136,17 @@
         "produces": [
           "application/json"
         ],
+        "parameters": [
+          {
+            "name": "excludeSelectors",
+            "in": "query",
+            "description": "Exclude components from DOM",
+            "required": false,
+            "type": "array",
+            "items": { "type": "string" },
+            "collectionFormat": "multi"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Send message and Run background job"
@@ -88,11 +163,13 @@
         ],
         "parameters": [
           {
-            "name": "outerSelector",
+            "name": "outerSelectors",
             "in": "query",
             "description": "Selector of outer component",
             "required": true,
-            "type": "string"
+            "type": "array",
+            "items": { "type": "string" },
+            "collectionFormat": "multi"
           },
           {
             "name": "innerSelector",
