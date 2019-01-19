@@ -68,7 +68,7 @@ class PageProcessingService {
         const html = viewportsHTML[viewPortName]
 
         const $ = await JqueryService.initJquery(html)
-        const title = $('title').text();
+        const title = $('title').text()
         const res = `${url};${title};\n`
         result.push(res)
       }
