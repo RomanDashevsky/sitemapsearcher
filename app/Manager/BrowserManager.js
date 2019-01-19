@@ -39,7 +39,6 @@ class BrowserManager {
 
     const result = []
     const browserWSEndpoint = await BrowserManager.getBrowserWSEndpoint(chromeHost);
-    console.log(browserWSEndpoint)
     const browser = await puppeteer.connect({
       browserWSEndpoint: browserWSEndpoint
     })
@@ -53,20 +52,18 @@ class BrowserManager {
       currentSearchingPromises.push(callbackFunc(urlArray[0], options, pagesPool[0], result))
 
       for (let i = 1; i < countOfUrls; i++) {
-
-        console.log(`${i}/${countOfUrls}`)
-
         currentSearchingPromises.push(callbackFunc(urlArray[i], options, pagesPool[i % countOfProcesses], result))
         if (i % countOfProcesses === 0) {
           await Promise.all(currentSearchingPromises)
+          console.log(`${i}/${countOfUrls}\t\t\t${Math.round(i*100/countOfUrls)}%`)
           currentSearchingPromises = []
         }
-
       }
 
       await Promise.all(currentSearchingPromises)
 
-      console.log('\nJob finished...');
+      console.log(`${countOfUrls}/${countOfUrls}\t\t\t100%`)
+      console.log('Job finished...');
 
     } catch (e) {
       throw e
