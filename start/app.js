@@ -19,6 +19,7 @@ const providers = [
   '@adonisjs/shield/providers/ShieldProvider',
   '@adonisjs/session/providers/SessionProvider',
   '@adonisjs/auth/providers/AuthProvider',
+  '@adonisjs/redis/providers/RedisProvider',
   '@adonisjs/drive/providers/DriveProvider',
   'adonis-swagger/providers/SwaggerProvider'
 ]

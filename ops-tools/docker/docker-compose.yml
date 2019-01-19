@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  crawler:
+    build: ./images/crawler
+    environment:
+      - DEV_MOD=YES
+    volumes:
+      - ../../:/var/www/app
+    networks:
+      - crawler
+    stdin_open: true
+    tty: true
+    ports:
+      - "3333:3333"
+    depends_on:
+      - redis
+      - chrome
+
+  chrome:
+    image: justinribeiro/chrome-headless
+    privileged: true
+    networks:
+      crawler:
+        ipv4_address: 172.20.0.50
+    ports:
+      - "9222:9222"
+
+  redis:
+    image: redis:5-alpine
+    networks:
+      - crawler
+    ports:
+      - "6379:6379"
+
+networks:
+  crawler:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
