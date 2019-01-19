@@ -44,3 +44,7 @@ commands:
   npm_isd:
     cmd: 'cd ./ops-tools/docker && docker-compose exec crawler sh -c "cd /app && npm i --save-dev @"'
     usage: Run npm install and save dev dependencies.
+
+  cc:
+    cmd: 'cd ./ops-tools/docker && docker-compose exec redis sh -c "redis-cli FLUSHALL"'
+    usage: Clear redis cache

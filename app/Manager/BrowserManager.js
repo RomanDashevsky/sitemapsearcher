@@ -2,11 +2,10 @@
 
 const Env = use('Env')
 const countOfProcesses = Env.get('COUNT_OF_PROCESSES')
-const dockerHost = Env.get('DOCKER_HOST')
+const chromeHost = Env.get('CHROME_HOST')
 const disableNonDomRequest = Env.get('DISABLE_NON_DOM_REQUEST')
 const puppeteer = require('puppeteer')
 const fetch = require('node-fetch')
-// const ProgressBar = require('ascii-progress')
 const { onlyDomRequest } = require('../Utils/helper')
 
 class BrowserManager {
@@ -39,7 +38,7 @@ class BrowserManager {
   static async getResult(urlArray, options, callbackFunc) {
 
     const result = []
-    const browserWSEndpoint = await BrowserManager.getBrowserWSEndpoint(dockerHost);
+    const browserWSEndpoint = await BrowserManager.getBrowserWSEndpoint(chromeHost);
     console.log(browserWSEndpoint)
     const browser = await puppeteer.connect({
       browserWSEndpoint: browserWSEndpoint
@@ -49,20 +48,13 @@ class BrowserManager {
 
     try {
       const countOfUrls = urlArray.length
-      // const bar = new ProgressBar({
-      //   schema: '[:bar.green]\t:current/:total \t:percent\t:elapseds\t:etas',
-      //   total: countOfUrls
-      // });
-
       let currentSearchingPromises = [];
 
       currentSearchingPromises.push(callbackFunc(urlArray[0], options, pagesPool[0], result))
-      // bar.tick()
 
       for (let i = 1; i < countOfUrls; i++) {
 
-        console.log(i)
-        // bar.tick()
+        console.log(`${i}/${countOfUrls}`)
 
         currentSearchingPromises.push(callbackFunc(urlArray[i], options, pagesPool[i % countOfProcesses], result))
         if (i % countOfProcesses === 0) {
